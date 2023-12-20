@@ -61,7 +61,7 @@ class TestGetOrder:
         get_params_id_courier = {"courierId": id_courier}
         # принимаем заказ со всеми полученными параметрами
         response_put = requests.put(url=f'{BASE_URL}{self.path_accept_order}', params=get_params_id_courier)
-        print(response_put.url)
+
         check.equal(response_put.status_code, 400)
         check.equal(response_put.json()['message'], 'Недостаточно данных для поиска')
 
