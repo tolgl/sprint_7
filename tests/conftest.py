@@ -3,6 +3,7 @@ import requests
 import random
 import string
 import pytest
+import datetime
 
 from config import DEFAULT_HEADERS, BASE_URL
 
@@ -70,7 +71,7 @@ def generation_login_pass_name_courier():
 
 
 @pytest.fixture()
-def del_data_courier():
+def fixture_del_courier():
     def del_courier(url, login, password):
         payload = {
             "login": login,
@@ -82,6 +83,29 @@ def del_data_courier():
                                          headers=DEFAULT_HEADERS)
         id_courier = response_post_id.json()['id']
         # удаление курьера по полученному id
-        requests.delete(url=f'{url}api/v1/courier/{id_courier}')
+        response_del = requests.delete(url=f'{url}api/v1/courier/{id_courier}')
+        return response_del
 
     return del_courier
+
+
+@pytest.fixture()
+def fixture_creating_order():
+    def creating_order(color):
+        payload = {
+            "firstName": "Test",
+            "lastName": "Testov",
+            "address": "Testovaya, 142 apt.",
+            "metroStation": 4,
+            "phone": "+7 800 355 35 35",
+            "rentTime": 5,
+            "deliveryDate": datetime.date.today().strftime('%Y-%m-%d'),
+            "comment": "Test comment",
+            "color": [color]
+        }
+        response_post_order = requests.post(url=f'{BASE_URL}api/v1/orders',
+                                            data=json.dumps(payload),
+                                            headers=DEFAULT_HEADERS)
+        return response_post_order
+
+    return creating_order
