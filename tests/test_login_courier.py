@@ -1,51 +1,46 @@
-import json
+import pytest
 
-import requests
-from config import BASE_URL, DEFAULT_HEADERS
-import pytest_check as check
+from clients.api_client import ApiClient
+from path.path_api import ApiPath
 
 
 class TestLoginCourier:
-    path = 'api/v1/courier/login'
 
-    def test_successful_login_courier(self, register_new_courier_and_return_login_password, fixture_del_courier):
+    def test_successful_login_courier(self, register_new_courier_and_return_login_password):
         payload = {
             "login": register_new_courier_and_return_login_password[0],
             "password": register_new_courier_and_return_login_password[1]
         }
-
-        response = requests.post(url=BASE_URL+self.path,
-                                 data=json.dumps(payload),
-                                 headers=DEFAULT_HEADERS)
-
+        api = ApiClient()
+        response = api.post(path=ApiPath.path_id_courier_login,
+                            payload=payload)
+        print(payload)
+        print(response.json())
         assert response.status_code == 200
-
-        # фикстура удаления курьера с тестовыми данными
-        fixture_del_courier(BASE_URL, payload['login'], payload['password'])
 
     def test_login_courier_without_password(self, register_new_courier_and_return_login_password):
         payload = {
             "login": register_new_courier_and_return_login_password[0]
         }
 
-        response = requests.post(url=BASE_URL + self.path,
-                                 data=json.dumps(payload),
-                                 headers=DEFAULT_HEADERS)
+        api = ApiClient()
+        response = api.post(path=ApiPath.path_id_courier_login,
+                            payload=payload)
 
-        check.equal(response.json()['message'], 'Недостаточно данных для входа')
-        check.equal(response.status_code, 400)
+        assert response.json()['message'] == 'Недостаточно данных для входа'
+        assert response.status_code == 400
 
     def test_login_courier_without_login(self, register_new_courier_and_return_login_password):
         payload = {
             "password": register_new_courier_and_return_login_password[1]
         }
 
-        response = requests.post(url=BASE_URL + self.path,
-                                 data=json.dumps(payload),
-                                 headers=DEFAULT_HEADERS)
+        api = ApiClient()
+        response = api.post(path=ApiPath.path_id_courier_login,
+                            payload=payload)
 
-        check.equal(response.json()['message'], 'Недостаточно данных для входа')
-        check.equal(response.status_code, 400)
+        assert response.json()['message'] == 'Недостаточно данных для входа'
+        assert response.status_code == 400
 
     def test_login_courier_non_existent_login(self, register_new_courier_and_return_login_password):
         payload = {
@@ -53,12 +48,12 @@ class TestLoginCourier:
             "password": register_new_courier_and_return_login_password[1]
         }
 
-        response = requests.post(url=BASE_URL + self.path,
-                                 data=json.dumps(payload),
-                                 headers=DEFAULT_HEADERS)
+        api = ApiClient()
+        response = api.post(path=ApiPath.path_id_courier_login,
+                            payload=payload)
 
-        check.equal(response.json()['message'], 'Учетная запись не найдена')
-        check.equal(response.status_code, 404)
+        assert response.json()['message'] == 'Учетная запись не найдена'
+        assert response.status_code == 404
 
     def test_login_courier_non_existent_password(self, register_new_courier_and_return_login_password):
         payload = {
@@ -66,9 +61,9 @@ class TestLoginCourier:
             "password": f'{register_new_courier_and_return_login_password[1]}_123'
         }
 
-        response = requests.post(url=BASE_URL + self.path,
-                                 data=json.dumps(payload),
-                                 headers=DEFAULT_HEADERS)
-        print(payload)
-        check.equal(response.json()['message'], 'Учетная запись не найдена')
-        check.equal(response.status_code, 404)
+        api = ApiClient()
+        response = api.post(path=ApiPath.path_id_courier_login,
+                            payload=payload)
+
+        assert response.json()['message'] == 'Учетная запись не найдена'
+        assert response.status_code == 404

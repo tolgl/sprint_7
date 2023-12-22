@@ -1,6 +1,5 @@
-import json
 import requests
-from config import BASE_URL, DEFAULT_HEADERS
+from config import BASE_URL
 
 
 class TestDeleteCourier:
