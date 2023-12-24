@@ -2,10 +2,12 @@ import pytest
 
 from clients.api_client import ApiClient
 from path.path_api import ApiPath
+import allure
 
 
 class TestLoginCourier:
 
+    @allure.title('Проверка успешного логина курьера в системе')
     def test_successful_login_courier(self, register_new_courier_and_return_login_password):
         payload = {
             "login": register_new_courier_and_return_login_password[0],
@@ -14,8 +16,8 @@ class TestLoginCourier:
         api = ApiClient()
         response = api.post(path=ApiPath.path_id_courier_login,
                             payload=payload)
-        print(payload)
-        print(response.json())
+        # print(payload)
+        # print(response.json())
         assert response.status_code == 200
 
     def test_login_courier_without_password(self, register_new_courier_and_return_login_password):
