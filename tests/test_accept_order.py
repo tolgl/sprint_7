@@ -4,7 +4,7 @@ from path.path_api import ApiPath
 
 class TestGetOrder:
 
-    def test_successful_accept_order(self, fixture_creating_order, register_new_courier_and_return_login_password, fixture_del_courier):
+    def test_successful_accept_order(self, fixture_creating_order, register_new_courier_and_return_login_password):
         # получаем трек номер заказа
         track_order = fixture_creating_order(color='BLACK').json()['track']
         get_params_track_order = {"t": track_order}
@@ -28,8 +28,6 @@ class TestGetOrder:
 
         assert response_put.status_code == 200
         assert response_put.json()['ok'] is True
-        # фикстура удаления курьера
-        # fixture_del_courier(BASE_URL, payload['login'], payload['password'])
 
     def test_accept_order_without_id_courier(self, fixture_creating_order):
         # получаем трек номер заказа
