@@ -38,5 +38,3 @@ def data_for_creating_order(color):
         }
 
     return payload
-
-
