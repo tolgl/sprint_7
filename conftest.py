@@ -36,15 +36,3 @@ def register_new_courier_and_return_login_password():
     return api.delete(path=f'{ApiPath.path_creating_courier}/'
                            f'{api.post(path=ApiPath.path_id_courier_login, payload=payload).json()["id"]}')
 
-
-# метод создания заказа
-@pytest.fixture()
-def fixture_creating_order():
-    def creating_order(color):
-        api = ApiClient()
-        response = api.post(path=ApiPath.path_all_orders,
-                            payload=data_for_creating_order(color))
-
-        return response
-
-    return creating_order
