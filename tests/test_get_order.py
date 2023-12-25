@@ -18,8 +18,8 @@ class TestGetOrder:
         api = ApiClient()
         # создаем заказ и получаем его номер
         track_order = api.post(path=ApiPath.path_all_orders,
-                               payload=data_for_creating_order(color='BLACK'))
-        get_params = {"t": track_order.json()['track']}
+                               payload=data_for_creating_order(color='BLACK')).json()['track']
+        get_params = {"t": track_order}
 
         response = api.get(path=ApiPath.path_order_by_track, get_params=get_params)
 
