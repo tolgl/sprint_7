@@ -4,7 +4,7 @@ from clients.api_client import ApiClient
 from path.path_api import ApiPath
 
 
-# метод регистрации и удаления нового курьера возвращает список из логина и пароля
+# метод регистрации и удаления нового курьера возвращает список из логина, пароля и запрос на создание курьера
 @pytest.fixture()
 def register_new_courier_and_return_login_password():
 
