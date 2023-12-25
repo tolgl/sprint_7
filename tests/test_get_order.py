@@ -1,7 +1,7 @@
 from clients.api_client import ApiClient
 from path.path_api import ApiPath
 import allure
-from conftest import fixture_creating_order
+from test_data import data_for_creating_order
 
 
 class TestGetOrder:
@@ -14,9 +14,13 @@ class TestGetOrder:
         assert len(response.json()['orders']) != 0
 
     @allure.title('Проверка получения заказа по номеру')
-    def test_get_order_by_track(self, fixture_creating_order):
-        get_params = {"t": fixture_creating_order(color='BLACK').json()['track']}
+    def test_get_order_by_track(self):
         api = ApiClient()
+        # создаем заказ и получаем его номер
+        track_order = api.post(path=ApiPath.path_all_orders,
+                               payload=data_for_creating_order(color='BLACK'))
+        get_params = {"t": track_order.json()['track']}
+
         response = api.get(path=ApiPath.path_order_by_track, get_params=get_params)
 
         assert response.json()['order']['track'] == get_params['t']
