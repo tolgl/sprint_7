@@ -1,9 +1,12 @@
+import allure
 from clients.api_client import ApiClient
 from path.path_api import ApiPath
+from conftest import fixture_creating_order, register_new_courier_and_return_login_password
 
 
 class TestGetOrder:
 
+    @allure.title('Проверка успешного оформления заказа')
     def test_successful_accept_order(self, fixture_creating_order, register_new_courier_and_return_login_password):
         # получаем трек номер заказа
         track_order = fixture_creating_order(color='BLACK').json()['track']
@@ -14,8 +17,8 @@ class TestGetOrder:
         id_order = response_get.json()['order']['id']
 
         payload = {
-            "login": register_new_courier_and_return_login_password[0],
-            "password": register_new_courier_and_return_login_password[1]
+            "login": register_new_courier_and_return_login_password[0][0],
+            "password": register_new_courier_and_return_login_password[0][1]
         }
 
         # получаем id курьера
@@ -29,6 +32,7 @@ class TestGetOrder:
         assert response_put.status_code == 200
         assert response_put.json()['ok'] is True
 
+    @allure.title('Проверка оформления заказа без id курьера')
     def test_accept_order_without_id_courier(self, fixture_creating_order):
         # получаем трек номер заказа
         track_order = fixture_creating_order(color='BLACK').json()['track']
@@ -42,11 +46,12 @@ class TestGetOrder:
         assert response_put.status_code == 400
         assert response_put.json()['message'] == 'Недостаточно данных для поиска'
 
+    @allure.title('Проверка оформления заказа без id заказа')
     def test_accept_order_without_id_order(self, register_new_courier_and_return_login_password):
 
         payload = {
-            "login": register_new_courier_and_return_login_password[0],
-            "password": register_new_courier_and_return_login_password[1]
+            "login": register_new_courier_and_return_login_password[0][0],
+            "password": register_new_courier_and_return_login_password[0][1]
         }
         # получаем id курьера
         api = ApiClient()
@@ -59,6 +64,7 @@ class TestGetOrder:
         assert response_put.status_code == 400
         assert response_put.json()['message'] == 'Недостаточно данных для поиска'
 
+    @allure.title('Проверка оформления заказа с несуществующим id курьера')
     def test_accept_order_non_existent_id_courier(self, fixture_creating_order):
         # получаем трек номер заказа
         track_order = fixture_creating_order(color='BLACK').json()['track']
@@ -74,11 +80,12 @@ class TestGetOrder:
         assert response_put.status_code == 404
         assert response_put.json()['message'] == 'Курьера с таким id не существует'
 
+    @allure.title('Проверка оформления заказа с несуществующим id заказа')
     def test_accept_order_non_existent_id_order(self, register_new_courier_and_return_login_password):
 
         payload = {
-            "login": register_new_courier_and_return_login_password[0],
-            "password": register_new_courier_and_return_login_password[1]
+            "login": register_new_courier_and_return_login_password[0][0],
+            "password": register_new_courier_and_return_login_password[0][1]
         }
         # получаем id курьера
         api = ApiClient()
