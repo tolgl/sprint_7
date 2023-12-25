@@ -33,6 +33,5 @@ def register_new_courier_and_return_login_password():
     yield [login_pass, response]
 
     del payload["firstName"]
-    return api.delete(path=f'{ApiPath.path_creating_courier}/'
-                           f'{api.post(path=ApiPath.path_id_courier_login, payload=payload).json()["id"]}')
-
+    api.delete(path=f'{ApiPath.path_creating_courier}/'
+                    f'{api.post(path=ApiPath.path_id_courier_login, payload=payload).json()["id"]}')
